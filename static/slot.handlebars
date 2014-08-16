@@ -1,0 +1,16 @@
+        <div class="col-md-4 text-center" id="slot-{{{name}}}">
+          <img data-src="holder.js/320x320/auto/{{{name}}}" class="img-circle" />
+          <h2 class="tickcoin-counter">{{ticks}}</h2>
+          <a class="btn btn-block btn-lg btn-primary ticker">TICK NOW</a>
+          <br/>
+          <div class="btn-group btn-group-sm btn-group btn-group-justified" data-toggle="buttons">
+            {{#available_counters}}
+            {{#active}}
+            <a class="btn btn-default active" >{{text}}</a>
+            {{/active}}
+            {{^active}}
+            <a href="#" class="btn btn-default counter-switcher" counter-name="{{{counter_name}}}">{{text}}</a>
+            {{/active}}
+            {{/available_counters}}
+          </div>
+        </div>
