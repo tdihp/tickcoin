@@ -47,14 +47,15 @@ def slots(request):
     return HttpResponse(data, content_type="application/json")
 
 
-
 def counter(request, slot_name,  counter_name):
     import random
+    import time
+    time.sleep(1)
     g_counter = random.randint(0, 100)
     jdata = {'ticks': g_counter}
     return HttpResponse(json.dumps(jdata), content_type="application/json")
 
 
-@require_http_methods(["GET", "POST"])
+@require_http_methods(["POST"])
 def tick(request, slot_name):
     return HttpResponse(json.dumps({'result': 'OK'}), content_type="application/json")

@@ -83,15 +83,15 @@ all = (arr, func, callback)->
 
 
 disable_clicks = (slot_selector) ->
-    $("#{slot_selector} > .ticker").removeAttr('href')
-    $("#{slot_selector} > .counter-switcher").removeAttr('href')
+    $("#{slot_selector} .ticker").removeAttr('href').addClass('disabled')
+    $("#{slot_selector} .counter-switcher").removeAttr('href').addClass('disabled')
 
 
 slot_callback = (slot)->
     slot_id = "#slot-#{slot.name}"
 
     # tick callback
-    $("#{slot_id} > .ticker").click((event)->
+    $("#{slot_id} .ticker").click((event)->
         # disable the click
         disable_clicks(slot_id)
         # send tick
@@ -107,13 +107,14 @@ slot_callback = (slot)->
     )
 
     # switch callback
-    $("#{slot_id} > .counter-switcher").click((event)->
+    $("#{slot_id} .counter-switcher").click((event)->
         # disable all switcher clicks
         disable_clicks(slot_id)
-        counter_name = event.target['counter-name']
+        counter_name = event.target.getAttribute('counter-name')
+        alert(counter_name)
         get_ticks(slot.name, counter_name, (ticks)->
             refresh_slot(slot, ticks, counter_name)
-            $(slot_id).replaceAll(slot_template(slot))
+            $(slot_template(slot)).replaceAll(slot_id)
             slot_callback(slot)
         )
     )
