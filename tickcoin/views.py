@@ -14,6 +14,7 @@ from social.backends.oauth import BaseOAuth1, BaseOAuth2
 from social.backends.google import GooglePlusAuth
 from social.backends.utils import load_backends
 
+from .models import Slot, Tick
 
 
 def logout(request):
@@ -27,7 +28,10 @@ def home(request):
     return render(request, 'index.html')
 
 
+@login_required
 def slots(request):
+    user = request.user
+
     available_counters = [
         {'counter_name': 'total', 'text': 'Total'},
         {'counter_name': 'day', 'text': 'Day'},
@@ -35,27 +39,26 @@ def slots(request):
         {'counter_name': 'month', 'text': 'Month'},
         {'counter_name': 'year', 'text': 'Year'},
     ]
-    jdata = {
-        'slots': [
-            {'name': "sky", 'available_counters': available_counters},
-            {'name': "vine", 'available_counters': available_counters},
-            {'name': "lava", 'available_counters': available_counters},
-        ]
-    }
+    slots = list({'name': slot.name, 'available_counters': available_counters} \
+                 for slot in Slot.objects.filter(user=user).order_by('pk'))
+    jdata = {'slots': slots}
     data = json.dumps(jdata)
-    print data
     return HttpResponse(data, content_type="application/json")
 
 
-def counter(request, slot_name,  counter_name):
-    import random
-    import time
-    time.sleep(1)
-    g_counter = random.randint(0, 100)
-    jdata = {'ticks': g_counter}
+@login_required
+def counter(request, slot_name, counter_name):
+    user = request.user
+    slot = Slot.objects.get(user=user, name=slot_name)
+    cnt = Tick.objects.filter(slot=slot).count()
+    jdata = {'ticks': cnt}
     return HttpResponse(json.dumps(jdata), content_type="application/json")
 
 
 @require_http_methods(["POST"])
 def tick(request, slot_name):
+    user = request.user
+    slot = Slot.objects.get(user=user, name=slot_name)
+    new_tick = Tick.objects.create(slot=slot)
+    new_tick.save()
     return HttpResponse(json.dumps({'result': 'OK'}), content_type="application/json")

@@ -111,7 +111,6 @@ slot_callback = (slot)->
         # disable all switcher clicks
         disable_clicks(slot_id)
         counter_name = event.target.getAttribute('counter-name')
-        alert(counter_name)
         get_ticks(slot.name, counter_name, (ticks)->
             refresh_slot(slot, ticks, counter_name)
             $(slot_template(slot)).replaceAll(slot_id)
